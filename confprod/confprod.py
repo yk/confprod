@@ -13,9 +13,9 @@ class Parameterized:
         return self.parameters[name] if name in self.parameters else default
 
 
-def generate_configurations(conf_objects):
+def generate_configurations(conf_specs):
     configurations = []
-    for conf_object in conf_objects:
+    for conf_object in conf_specs:
         partlists = {}
         for partkey, partlist in conf_object.items():
             partlists[partkey] = []
@@ -65,17 +65,17 @@ def merge_with_defaults(conf, defaults):
                     c = val["default"]
                     conf[key] = (c, val[c])
                 else:
-                    ci = val.items()[0]
+                    ci = list(val.items())[0]
                     conf[key] = ci
             else:
                 conf[key] = val
     return conf
 
 
-def generate_instantiated_configurations(conf_objects, defaults=None):
+def generate_instantiated_configurations(conf_specs, defaults=None):
     if defaults is None:
         defaults = dict()
-    for conf_object in conf_objects:
+    for conf_object in generate_configurations(conf_specs):
         co = merge_with_defaults(conf_object, defaults)
         yield instantiate_configuration(co)
 
