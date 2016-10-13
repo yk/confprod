@@ -1,11 +1,12 @@
 import itertools
 import random
 import math
+from numpy import array
 
 
 def _ensure_list(l):
     """ensures that l is list. if not, returns [l]"""
-    return l if isinstance(l, list) else [l]
+    return l if isinstance(l, (list, array)) else [l]
 
 
 def add_to_configurations(configs: list, d: dict):
