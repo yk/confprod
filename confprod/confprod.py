@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import copy
 import itertools
 import random
 import math
@@ -12,9 +13,14 @@ def _ensure_list(l):
 
 
 def add_to_configurations(configs: list, d: dict):
-    for c in configs:
+    ds = generate_configurations(d)
+    cs = []
+    for c, d in itertools.product(configs, ds):
+        c = copy.deepcopy(c)
         for k, v in d.items():
             c[k] = v
+        cs.append(c)
+    return cs
 
 
 def sample_from_configurations(configs, num_samples):
