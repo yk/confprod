@@ -5,6 +5,7 @@ import itertools
 import random
 import math
 from numpy import ndarray
+import numpy as np
 
 
 def _ensure_list(l):
@@ -27,7 +28,33 @@ def sample_from_configurations(configs, num_samples):
     return random.sample(configs, num_samples)
 
 
+def number_of_configs(conf_spec):
+    n = 1
+    for v in conf_spec.values():
+        if isinstance(v, (list, ndarray)):
+            n *= len(v)
+    return n
+
+
 def generate_configurations(conf_specs, num_samples=-1):
+    conf_specs = _ensure_list(conf_specs)
+    configurations = []
+    if num_samples < 0:
+        for cs in conf_specs:
+            confs = generate_configurations_single(cs)
+            configurations.extend(confs)
+    else:
+        nums = np.array([number_of_configs(cs) for cs in conf_specs])
+        total = np.sum(nums)
+        buckets = np.random.choice(len(nums), num_samples, True, nums / total)
+        _, counts = np.unique(buckets, return_counts)
+        for cs, ct in zip(conf_specs, counts):
+            confs = generate_configurations_single(cs, ct)
+            configurations.extend(confs)
+    return configurations
+
+
+def generate_configurations_single(conf_specs, num_samples=-1):
     """if num_samples is int, then sample that many elements. If it is float, sample that fraction. If it is <= 0, return all elements."""
     configurations = []
     vals = list(map(_ensure_list, conf_specs.values()))
