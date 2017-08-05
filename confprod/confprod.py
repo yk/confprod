@@ -60,7 +60,7 @@ def generate_configurations_single(conf_specs, num_samples=-1):
     vals = list(map(_ensure_list, conf_specs.values()))
     inds = [list(range(len(v))) for v in vals]
 
-    if not isinstance(num_samples, int):
+    if not isinstance(num_samples, (int, np.int32, np.int64)):
         num_samples = math.ceil(len(configurations) * num_samples)
 
     if num_samples <= 0:
