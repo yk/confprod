@@ -36,7 +36,7 @@ def number_of_configs(conf_spec):
     return n
 
 
-def generate_configurations(conf_specs, num_samples=-1):
+def generate_configurations(conf_specs, num_samples=-1, shuffle=False):
     conf_specs = _ensure_list(conf_specs)
     configurations = []
     if num_samples < 0:
@@ -51,6 +51,8 @@ def generate_configurations(conf_specs, num_samples=-1):
         for cs, ct in zip(conf_specs, counts):
             confs = generate_configurations_single(cs, ct)
             configurations.extend(confs)
+    if shuffle:
+        random.shuffle(configurations)
     return configurations
 
 
