@@ -47,7 +47,7 @@ def generate_configurations(conf_specs, num_samples=-1):
         nums = np.array([number_of_configs(cs) for cs in conf_specs])
         total = np.sum(nums)
         buckets = np.random.choice(len(nums), num_samples, True, nums / total)
-        _, counts = np.unique(buckets, return_counts)
+        _, counts = np.unique(buckets, return_counts=True)
         for cs, ct in zip(conf_specs, counts):
             confs = generate_configurations_single(cs, ct)
             configurations.extend(confs)
