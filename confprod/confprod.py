@@ -28,7 +28,14 @@ def sample_from_configurations(configs, num_samples):
     return random.sample(configs, num_samples)
 
 
-def number_of_configs(conf_spec):
+def number_of_configs(conf_specs):
+    conf_specs = _ensure_list(conf_specs)
+    return sum(number_of_configs_single(cs) for cs in conf_specs)
+
+
+def number_of_configs_single(conf_spec):
+    if not len(conf_spec):
+        return 0
     n = 1
     for v in conf_spec.values():
         if isinstance(v, (list, ndarray)):
@@ -44,7 +51,7 @@ def generate_configurations(conf_specs, num_samples=-1, shuffle=False):
             confs = generate_configurations_single(cs)
             configurations.extend(confs)
     else:
-        nums = np.array([number_of_configs(cs) for cs in conf_specs])
+        nums = np.array([number_of_configs_single(cs) for cs in conf_specs])
         total = np.sum(nums)
         buckets = np.random.choice(len(nums), num_samples, True, nums / total)
         _, counts = np.unique(buckets, return_counts=True)
